@@ -24,7 +24,7 @@ export class UsersService {
   async initCreateAdmin() {
     try {
       const existAdmin = await this.userModal.findOne({
-        username: this.configSerive.get('NAME'),
+        username: this.configSerive.get('USERNAME'),
       });
 
       if (existAdmin) return;
@@ -107,8 +107,7 @@ export class UsersService {
       return await this.userModal
         .find(query)
         .select('-password')
-        .sort({ createdAt: -1 })
-        .populate('children');
+        .sort({ createdAt: -1 });
     } catch (error) {
       throw error;
     }
@@ -116,7 +115,7 @@ export class UsersService {
 
   async findOne(id: string) {
     try {
-      return await this.userModal.findById(id).populate('children');
+      return await this.userModal.findById(id);
     } catch (error) {}
   }
 
@@ -171,64 +170,6 @@ export class UsersService {
         status: HttpStatus.CREATED,
         message: 'Cập nhật thông tin thành công',
         data,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async changeInfoByAdmin(updateUserDto: UpdateUserDto, role: number) {
-    if (role !== 3) {
-      throw new BadRequestException({
-        message: 'Chỉ admin mới xem được cập nhật người dùng',
-      });
-    }
-    try {
-      const { _id, ...rest } = updateUserDto;
-      const data = await this.userModal.findByIdAndUpdate(_id, rest, {
-        new: true,
-      });
-      return {
-        status: HttpStatus.CREATED,
-        message: 'Cập nhật thông tin thành công',
-        data,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async block(id: string, role: number) {
-    if (role !== 3) {
-      throw new BadRequestException({
-        message: 'Chỉ admin mới xem được khóa người dùng',
-      });
-    }
-    try {
-      const user = await this.userModal.findById(id);
-
-      await user.save();
-      return {
-        status: HttpStatus.OK,
-        message: 'Thay đổi trạng thái thành công',
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async remove(id, role: number) {
-    if (role !== 4) {
-      throw new BadRequestException({
-        message: 'You are not admin',
-      });
-    }
-    try {
-      await this.userModal.findByIdAndUpdate(id, { isDelete: 0 });
-
-      return {
-        status: HttpStatus.OK,
-        message: 'Xóa người dùng thành công',
       };
     } catch (error) {
       throw error;
