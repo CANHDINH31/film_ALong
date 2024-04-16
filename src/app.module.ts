@@ -7,6 +7,8 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
+import { CategoriesModule } from './categories/categories.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { UsersModule } from './users/users.module';
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
+    CategoriesModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
