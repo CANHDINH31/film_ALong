@@ -13,6 +13,9 @@ export class Category {
 
   @Prop()
   poster: string;
+
+  @Prop({ default: 1 })
+  status: number;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

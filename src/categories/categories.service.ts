@@ -25,9 +25,10 @@ export class CategoriesService {
     }
   }
 
-  async findAll() {
+  async findAll(status: string) {
     try {
-      return await this.categoryModal.find({});
+      const query = { ...(status && { status: status }) };
+      return await this.categoryModal.find(query);
     } catch (error) {
       throw error;
     }
@@ -59,7 +60,12 @@ export class CategoriesService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: string) {
+    try {
+      await this.categoryModal.findByIdAndUpdate(id, { status: 0 });
+      return 'Delete Successfully';
+    } catch (error) {
+      throw error;
+    }
   }
 }
