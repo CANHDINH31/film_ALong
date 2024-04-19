@@ -8,7 +8,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
-import { UploadsModule } from './uploads/uploads.module';
 import { FilmsModule } from './films/films.module';
 
 @Module({
@@ -20,13 +19,12 @@ import { FilmsModule } from './films/films.module';
       }),
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/uploads',
+      rootPath: join(__dirname, '..', 'storage'),
+      serveRoot: '/storage',
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     CategoriesModule,
-    UploadsModule,
     FilmsModule,
   ],
   controllers: [AppController],

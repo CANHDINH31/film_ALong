@@ -1,7 +1,7 @@
-<<<<<<< HEAD
 # compiled output
 /dist
 /node_modules
+/storage
 /data
 /docker
 # Logs
@@ -37,10 +37,4 @@ lerna-debug.log*
 !.vscode/extensions.json
 logger.log
 
-#env
-.env
 
-=======
-node_modules/
-uploads/
->>>>>>> 222dda40282f98fe908f2f09709e197f93dfffef

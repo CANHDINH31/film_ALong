@@ -4,6 +4,7 @@ import { UpdateFilmDto } from './dto/update-film.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Film } from 'src/schemas/film.schema';
+import * as fs from 'fs';
 
 @Injectable()
 export class FilmsService {
@@ -61,6 +62,8 @@ export class FilmsService {
       throw err;
     }
   }
+
+  async play(range: string, res: Response) {}
 
   async findOne(id: string) {
     try {
