@@ -1,4 +1,23 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateFilmDto } from './create-film.dto';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
-export class UpdateFilmDto extends PartialType(CreateFilmDto) {}
+export class UpdateFilmDto {
+  @IsOptional()
+  @IsString()
+  title: string;
+
+  @IsOptional()
+  @IsString()
+  description: string;
+
+  @IsOptional()
+  @IsString()
+  poster: string;
+
+  @IsOptional()
+  @IsString()
+  url: string;
+
+  @IsOptional()
+  @IsArray()
+  category?: string[];
+}

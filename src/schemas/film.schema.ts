@@ -21,4 +21,4 @@ export class Film {
   category: string[];
 }
 
-export const FilmDocument = SchemaFactory.createForClass(Film);
+export const FilmSchema = SchemaFactory.createForClass(Film);
