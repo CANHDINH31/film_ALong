@@ -1,23 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Category } from 'src/schemas/category.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class CategoriesService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+    @InjectModel(Category.name) private categoryModal: Model<Category>,
+  ) {}
+
+  async create(createCategoryDto: CreateCategoryDto) {
+    try {
+      const data = await this.categoryModal.create(createCategoryDto);
+
+      return {
+        status: HttpStatus.CREATED,
+        message: 'Thêm mới category thành công',
+        data,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all categories`;
+  async findAll() {
+    try {
+      return await this.categoryModal.find({});
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: string) {
+    try {
+      return await this.categoryModal.findById(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    try {
+      const data = await this.categoryModal.findByIdAndUpdate(
+        id,
+        updateCategoryDto,
+        { new: true },
+      );
+
+      return {
+        status: HttpStatus.CREATED,
+        message: 'Cập nhật category thành công',
+        data,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   remove(id: number) {
