@@ -4,7 +4,8 @@ import { UpdateFilmDto } from './dto/update-film.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Film } from 'src/schemas/film.schema';
-import * as fs from 'fs';
+import { Response } from 'express';
+import { statSync, createReadStream } from 'fs';
 
 @Injectable()
 export class FilmsService {
@@ -21,6 +22,35 @@ export class FilmsService {
       };
     } catch (error) {
       throw error;
+    }
+  }
+
+  async stream(id: string, headers, res: Response) {
+    const videoPath = `storage/video.mp4`;
+    const { size } = statSync(videoPath);
+    const videoRange = headers.range;
+    if (videoRange) {
+      const parts = videoRange.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : size - 1;
+      const chunksize = end - start + 1;
+      const readStreamfile = createReadStream(videoPath, {
+        start,
+        end,
+        highWaterMark: 60,
+      });
+      const head = {
+        'Content-Range': `bytes ${start}-${end}/${size}`,
+        'Content-Length': chunksize,
+      };
+      res.writeHead(HttpStatus.PARTIAL_CONTENT, head);
+      readStreamfile.pipe(res);
+    } else {
+      const head = {
+        'Content-Length': size,
+      };
+      res.writeHead(HttpStatus.OK, head); //200
+      createReadStream(videoPath).pipe(res);
     }
   }
 
@@ -62,8 +92,6 @@ export class FilmsService {
       throw err;
     }
   }
-
-  async play(range: string, res: Response) {}
 
   async findOne(id: string) {
     try {
