@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FilmsModule } from './films/films.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UploadsModule } from './uploads/uploads.module';
       rootPath: join(__dirname, '..', 'storage'),
       serveRoot: '/storage',
     }),
+    MulterModule.register({ dest: './storage' }),
     ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     CategoriesModule,
