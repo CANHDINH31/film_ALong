@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -6,10 +6,16 @@ import { Model } from 'mongoose';
 import { Film } from 'src/schemas/film.schema';
 import { Response } from 'express';
 import { statSync, createReadStream } from 'fs';
+import { User } from 'src/schemas/users.schema';
+import { NORMAL_USER, VIP_USER } from 'src/constants';
+import * as fs from 'fs';
 
 @Injectable()
 export class FilmsService {
-  constructor(@InjectModel(Film.name) private filmModal: Model<Film>) {}
+  constructor(
+    @InjectModel(Film.name) private filmModal: Model<Film>,
+    @InjectModel(User.name) private userModal: Model<User>,
+  ) {}
 
   async createByAdmin(createFilmDto: CreateFilmDto) {
     try {
@@ -31,7 +37,54 @@ export class FilmsService {
 
   async createByUser(createFilmDto: CreateFilmDto) {
     try {
-      const data = await this.filmModal.create(createFilmDto);
+      const user = await this.userModal.findById(createFilmDto.user);
+      const userType = user.type;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      const amountUploadVideoToday = await this.filmModal.countDocuments({
+        user: createFilmDto.user,
+        createdAt: {
+          $gte: today,
+          $lt: tomorrow,
+        },
+      });
+
+      if (userType === NORMAL_USER && amountUploadVideoToday === 1) {
+        await fs.unlink(createFilmDto.url, (err) => {
+          if (err) {
+            console.log('error in deleting a file from uploads');
+          } else {
+            console.log('succesfully deleted from the uploads folder');
+          }
+        });
+
+        throw new BadRequestException(
+          'Register as a VIP member to post 2 videos per day',
+        );
+      }
+
+      if (userType === VIP_USER && amountUploadVideoToday === 2) {
+        await fs.unlink(createFilmDto.url, (err) => {
+          if (err) {
+            console.log('error in deleting a file from uploads');
+          } else {
+            console.log('succesfully deleted from the uploads folder');
+          }
+        });
+
+        throw new BadRequestException('Only post 2 videos per day');
+      }
+
+      const data = await this.filmModal.create({
+        ...createFilmDto,
+        type: 2,
+        status: 2,
+      });
 
       return {
         status: HttpStatus.CREATED,

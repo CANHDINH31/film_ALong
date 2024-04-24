@@ -29,7 +29,7 @@ export class Film {
 
   @Prop()
   status: number;
-  // 0:delete 1:active  2:pending 3:reject
+  //  1:active  2:pending 3:reject
 }
 
 export const FilmSchema = SchemaFactory.createForClass(Film);

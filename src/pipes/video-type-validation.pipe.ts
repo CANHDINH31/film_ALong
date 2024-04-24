@@ -7,8 +7,6 @@ export class VideoTypeValidationPipe implements PipeTransform {
     try {
       const { mimetype } = value;
 
-      console.log(value);
-
       if (!mimetype.includes('video')) {
         await fs.unlink(value.path, (err) => {
           if (err) {
