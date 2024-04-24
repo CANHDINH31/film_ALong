@@ -2,12 +2,14 @@ import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import * as fs from 'fs';
 
 @Injectable()
-export class ImageTypeValidationPipe implements PipeTransform {
+export class VideoTypeValidationPipe implements PipeTransform {
   async transform(value: Express.Multer.File) {
     try {
       const { mimetype } = value;
 
-      if (!mimetype.includes('image')) {
+      console.log(value);
+
+      if (!mimetype.includes('video')) {
         await fs.unlink(value.path, (err) => {
           if (err) {
             console.log('error in deleting a file from uploads');
@@ -15,9 +17,7 @@ export class ImageTypeValidationPipe implements PipeTransform {
             console.log('succesfully deleted from the uploads folder');
           }
         });
-        throw new BadRequestException(
-          'The image should be either jpeg, png, or webp.',
-        );
+        throw new BadRequestException('Only upload video');
       }
 
       return value;
