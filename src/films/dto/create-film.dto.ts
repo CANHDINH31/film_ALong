@@ -20,4 +20,8 @@ export class CreateFilmDto {
   @IsOptional()
   @IsArray()
   category?: string[];
+
+  @IsNotEmpty()
+  @IsString()
+  user: string;
 }

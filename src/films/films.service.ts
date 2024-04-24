@@ -11,7 +11,25 @@ import { statSync, createReadStream } from 'fs';
 export class FilmsService {
   constructor(@InjectModel(Film.name) private filmModal: Model<Film>) {}
 
-  async create(createFilmDto: CreateFilmDto) {
+  async createByAdmin(createFilmDto: CreateFilmDto) {
+    try {
+      const data = await this.filmModal.create({
+        ...createFilmDto,
+        type: 1,
+        status: 1,
+      });
+
+      return {
+        status: HttpStatus.CREATED,
+        message: 'Thêm mới film thành công',
+        data,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createByUser(createFilmDto: CreateFilmDto) {
     try {
       const data = await this.filmModal.create(createFilmDto);
 
@@ -26,7 +44,8 @@ export class FilmsService {
   }
 
   async stream(id: string, headers, res: Response) {
-    const videoPath = `storage/video.mp4`;
+    const video = await this.filmModal.findById(id);
+    const videoPath = video?.url;
     const { size } = statSync(videoPath);
     const videoRange = headers.range;
     if (videoRange) {
@@ -60,6 +79,8 @@ export class FilmsService {
     title = '',
     limit: number,
     category: string,
+    status: number,
+    type: number,
   ) {
     try {
       const skip = Number(pageSize) * (page - 1);
@@ -68,11 +89,14 @@ export class FilmsService {
       const query = {
         ...(category && { category: category }),
         ...(title && { title: { $regex: title, $options: 'i' } }),
+        ...(status && { status: Number(status) }),
+        ...(type && { type: Number(type) }),
       };
 
       const data = await this.filmModal
         .find(query)
         .populate('category')
+        .populate('user')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(take);
@@ -95,7 +119,10 @@ export class FilmsService {
 
   async findOne(id: string) {
     try {
-      return await this.filmModal.findById(id).populate('category');
+      return await this.filmModal
+        .findById(id)
+        .populate('category')
+        .populate('user');
     } catch (error) {
       throw error;
     }

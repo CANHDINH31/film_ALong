@@ -30,7 +30,7 @@ export class UploadsController {
     @UploadedFile(new ImageTypeValidationPipe())
     file: Express.Multer.File,
   ) {
-    return file.path;
+    return file.path?.replace('\\', '/');
   }
 
   @Post('video')
@@ -49,6 +49,6 @@ export class UploadsController {
     @UploadedFile(new VideoTypeValidationPipe())
     file: Express.Multer.File,
   ) {
-    return file.path;
+    return file.path?.replace('\\', '/');
   }
 }

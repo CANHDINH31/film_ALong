@@ -20,9 +20,14 @@ import { Response } from 'express';
 export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
 
-  @Post()
-  create(@Body() createFilmDto: CreateFilmDto) {
-    return this.filmsService.create(createFilmDto);
+  @Post('admin')
+  createByAdmin(@Body() createFilmDto: CreateFilmDto) {
+    return this.filmsService.createByAdmin(createFilmDto);
+  }
+
+  @Post('user')
+  createByUser(@Body() createFilmDto: CreateFilmDto) {
+    return this.filmsService.createByUser(createFilmDto);
   }
 
   @Get('stream/:id')
@@ -38,8 +43,16 @@ export class FilmsController {
 
   @Get()
   index(@Req() req) {
-    const { pageSize, page, title, limit, category } = req.query;
-    return this.filmsService.list(page, pageSize, title, limit, category);
+    const { pageSize, page, title, limit, category, status, type } = req.query;
+    return this.filmsService.list(
+      page,
+      pageSize,
+      title,
+      limit,
+      category,
+      status,
+      type,
+    );
   }
 
   @Get(':id')
