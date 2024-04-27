@@ -12,6 +12,7 @@ import { FilmsModule } from './films/films.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { CashsModule } from './cashs/cashs.module';
+import { AdvertismentsModule } from './advertisments/advertisments.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CashsModule } from './cashs/cashs.module';
     FilmsModule,
     UploadsModule,
     CashsModule,
+    AdvertismentsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
