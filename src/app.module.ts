@@ -11,6 +11,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { FilmsModule } from './films/films.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { CashsModule } from './cashs/cashs.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { MulterModule } from '@nestjs/platform-express';
     CategoriesModule,
     FilmsModule,
     UploadsModule,
+    CashsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
