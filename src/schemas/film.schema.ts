@@ -19,6 +19,17 @@ export class Film {
 
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Category' })
   category: string[];
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: string;
+
+  @Prop()
+  type: number;
+  // 1: admin upload - 2:user upload
+
+  @Prop()
+  status: number;
+  //  1:active  2:pending 3:reject
 }
 
 export const FilmSchema = SchemaFactory.createForClass(Film);

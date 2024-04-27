@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateFilmDto {
   @IsOptional()
@@ -20,4 +20,12 @@ export class UpdateFilmDto {
   @IsOptional()
   @IsArray()
   category?: string[];
+
+  @IsOptional()
+  @IsNumber()
+  type: number;
+
+  @IsOptional()
+  @IsNumber()
+  status: number;
 }
