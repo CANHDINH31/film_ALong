@@ -9,6 +9,7 @@ import { FindUserByEmailAndUsernameDto } from './dto/find-user-by-email-and-user
 import { PasswordDto } from './dto/password-dto';
 import * as bcrypt from 'bcrypt';
 import * as moment from 'moment';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class UsersService {
@@ -40,6 +41,30 @@ export class UsersService {
         password: password,
         role: this.configSerive.get('ROLE'),
       });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async login(loginDto: LoginDto) {
+    try {
+      const existAccount = await this.userModal.findOne({
+        $or: [
+          { email: loginDto.account, password: loginDto.password },
+          { username: loginDto.account, password: loginDto.password },
+        ],
+      });
+
+      if (!existAccount)
+        throw new BadRequestException({
+          message: 'Email / Username hoặc password không tồn tại',
+        });
+
+      return {
+        status: HttpStatus.OK,
+        message: 'Đăng nhập thành công',
+        data: existAccount,
+      };
     } catch (error) {
       throw error;
     }
