@@ -43,7 +43,8 @@ export class FilmsController {
 
   @Get()
   index(@Req() req) {
-    const { pageSize, page, title, limit, category, status, type } = req.query;
+    const { pageSize, page, title, limit, category, status, type, user } =
+      req.query;
     return this.filmsService.list(
       page,
       pageSize,
@@ -52,6 +53,7 @@ export class FilmsController {
       category,
       status,
       type,
+      user,
     );
   }
 

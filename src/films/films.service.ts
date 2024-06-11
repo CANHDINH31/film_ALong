@@ -134,16 +134,20 @@ export class FilmsService {
     category: string,
     status: number,
     type: number,
+    user?: string,
   ) {
     try {
       const skip = Number(pageSize) * (page - 1);
       const take = Number(limit) || Number(pageSize);
 
+      const listCategory = category?.split(',');
+
       const query = {
-        ...(category && { category: category }),
+        ...(listCategory?.length > 1 && { category: { $in: listCategory } }),
         ...(title && { title: { $regex: title, $options: 'i' } }),
         ...(status && { status: Number(status) }),
         ...(type && { type: Number(type) }),
+        ...(user && { user: user }),
       };
 
       const data = await this.filmModal
